@@ -6,18 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "node server/server.js",
+    "dev:full": "concurrently \"npm run dev\" \"npm run start\""
   },
   "dependencies": {
     "@react-three/drei": "^9.102.0",
     "@react-three/fiber": "^8.14.0",
     "@splinetool/react-spline": "^4.0.0",
+    "cors": "^2.8.5",
+    "express": "4.18.2",
     "framer-motion": "^12.16.0",
     "gasp": "^0.0.2",
     "gsap": "^3.13.0",
     "locomotive-scroll": "^4.1.4",
     "lucide-react": "^0.344.0",
+    "path-to-regexp": "6.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.6.1",

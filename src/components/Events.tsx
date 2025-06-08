@@ -2,6 +2,73 @@ import React from 'react';
 import { Calendar, Clock, MapPin, Users, ArrowRight } from 'lucide-react';
 import Cont from '../assets/controlcard.png';
 
+import { useState } from 'react';
+
+function Newsletter() {
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessage(data.message);
+        setEmail('');
+      } else {
+        setMessage(data.error || 'Subscription failed');
+      }
+    } catch (error) {
+      setMessage('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-12 p-6 bg-gray-800 rounded-xl border border-gray-700 text-center">
+      <h3 className="text-xl font-semibold mb-4">Stay Updated on All Events</h3>
+      <p className="text-gray-300 mb-6">
+        Subscribe to our newsletter to receive notifications about upcoming events, workshops, and competitions.
+      </p>
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-md mx-auto">
+        <input 
+          type="email" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email" 
+          className="px-4 py-3 bg-gray-900 rounded-l-md focus:outline-none focus:ring-1 focus:ring-blue-500 border border-gray-700 mb-2 sm:mb-0 sm:flex-1"
+          required
+        />
+        <button 
+          type="submit"
+          disabled={isLoading}
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md sm:rounded-l-none transition-colors disabled:opacity-50"
+        >
+          {isLoading ? 'Subscribing...' : 'Subscribe'}
+        </button>
+      </form>
+      {message && (
+        <p className={`mt-4 ${message.includes('Thank you') ? 'text-green-400' : 'text-red-400'}`}>
+          {message}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // Event data
 const eventsData = [
   // {
@@ -136,22 +203,7 @@ const Events = () => {
           ))}
         </div>
         
-        <div className="mt-12 p-6 bg-gray-800 rounded-xl border border-gray-700 text-center">
-          <h3 className="text-xl font-semibold mb-4">Stay Updated on All Events</h3>
-          <p className="text-gray-300 mb-6">
-            Subscribe to our newsletter to receive notifications about upcoming events, workshops, and competitions.
-          </p>
-          <div className="flex flex-col sm:flex-row max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="px-4 py-3 bg-gray-900 rounded-l-md focus:outline-none focus:ring-1 focus:ring-blue-500 border border-gray-700 mb-2 sm:mb-0 sm:flex-1"
-            />
-            <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-md sm:rounded-l-none transition-colors">
-              Subscribe
-            </button>
-          </div>
-        </div>
+        <Newsletter />
       </div>
     </section>
   );
